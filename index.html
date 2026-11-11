@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f4ef">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="한두 그릇">
+<title>한두 그릇 · 1–2인분 레시피북</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f7f7f7; --card:#ffffff; --ink:#111111; --soft:#767676; --line:#e6e6e6; --press:#f0f0f0;
+  --accent:#111111; --accent-ink:#ffffff; --green:#2e7d5b; --green-bg:#edf5f0; --warn:#d0432b; --warn-bg:#f5f5f5;
+  --sans:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --serif:"Gowun Batang","Nanum Myeongjo",serif;
+}
+[data-theme=classic]{
+  --paper:#f5efe3; --card:#fffdf8; --ink:#2a2420; --soft:#6f655c; --line:#e2d8c6; --press:#f7f1e4;
+  --accent:#c2452d; --accent-ink:#fff; --green:#55733f; --green-bg:#e8eedd; --warn:#c2452d; --warn-bg:#f7e4dc;
+}
+[data-theme=sage]{
+  --paper:#f3f4ef; --card:#ffffff; --ink:#2b2f2a; --soft:#72786f; --line:#e1e4dc; --press:#eef0ea;
+  --accent:#5f7a5a; --accent-ink:#fff; --green:#5f7a5a; --green-bg:#e9efe6; --warn:#b8573f; --warn-bg:#f1f3ec;
+}
+[data-theme=dark]{
+  color-scheme:dark;
+  --paper:#151617; --card:#1f2123; --ink:#f0f0ee; --soft:#9a9d9f; --line:#303335; --press:#26292b;
+  --accent:#e6b45e; --accent-ink:#1a1a1a; --green:#7fbf9a; --green-bg:#24332b; --warn:#ef7d66; --warn-bg:#2a2c2e;
+}
+.brand h1,.card h3,.panel h2,.dlg h2,.dlg h4{font-family:var(--serif)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+header{padding:36px 0 0}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brand h1{font-size:2rem;font-weight:700;margin:0;letter-spacing:-.03em}
+.brand p{margin:0;color:var(--soft)}
+nav{display:flex;gap:4px;margin-top:22px;border-bottom:1px solid var(--line)}
+nav button{background:none;border:0;padding:10px 18px;font-size:1rem;font-weight:600;color:var(--soft);border-radius:8px 8px 0 0}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.count{display:inline-block;min-width:1.4em;padding:0 .35em;margin-left:4px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font-family:var(--sans);font-size:.78rem;text-align:center}
+
+main{padding:24px 0 60px}
+section[hidden]{display:none}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.bar input[type=search]{flex:1 1 220px}
+input[type=search],input[type=text],input[type=number],select,textarea{
+  background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 12px;min-width:0}
+textarea{width:100%;resize:vertical}
+.btn{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-weight:500}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border-color:var(--line);color:var(--soft)}
+.btn.small{padding:5px 10px;font-size:.9rem}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.chip{background:none;border:1px solid var(--line);border-radius:99px;padding:5px 14px;color:var(--soft)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip.edit{border-style:dashed;color:var(--accent);border-color:var(--accent)}
+.catrow{display:flex;gap:8px;margin-bottom:8px}
+.catrow input{flex:1}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px;text-align:left;width:100%;display:block;transition:transform .15s,box-shadow .15s}
+.card:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(29,33,31,.06)}
+.card .cat{display:block;font-size:.8rem;color:var(--accent);font-weight:600}
+.card h3{font-weight:700;letter-spacing:-.02em;font-size:1.15rem;margin:4px 0 8px;line-height:1.35;padding-right:24px}
+.card .meta{display:block;color:var(--soft);font-size:.9rem}
+.rt{color:#b57f10;margin-left:6px;white-space:nowrap}
+.rs{display:inline-flex}
+.rs button{background:none;border:0;font-size:1.7rem;line-height:1;color:var(--line);padding:2px 3px}
+.rs button.on{color:#d99a1c}
+.rv-new{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rv-new input{flex:1 1 180px}
+.rvs{margin:10px 0 0;padding:0}
+.rvs li{list-style:none;display:flex;gap:8px;align-items:baseline;padding:7px 0;border-bottom:1px dotted var(--line)}
+.rvs .st{color:#d99a1c;white-space:nowrap;letter-spacing:-1px}
+.rvs .tx{flex:1;min-width:0;overflow-wrap:anywhere}
+.rvs .dt{color:var(--soft);font-size:.8rem;white-space:nowrap}
+.rvs button{background:none;border:0;color:var(--soft);padding:0 6px;font-size:1.1rem}
+.star{position:absolute;top:12px;right:12px;background:none;border:0;font-size:1.2rem;color:var(--line);padding:2px 4px;line-height:1}
+.star.on{color:#d99a1c}
+.empty{padding:40px 20px;text-align:center;color:var(--soft);border:1px dashed var(--line);border-radius:12px}
+
+.match{margin-top:10px;font-size:.88rem}
+.meter{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 6px}
+.meter i{display:block;height:100%;background:var(--green)}
+.miss{color:var(--warn)}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);border-radius:99px;padding:4px 6px 4px 12px;margin:0 6px 6px 0}
+.tag button{background:none;border:0;color:inherit;padding:0 4px;font-size:1rem;line-height:1}
+label.check{display:inline-flex;gap:8px;align-items:center;color:var(--soft);font-size:.92rem}
+
+.two{display:grid;grid-template-columns:1fr 1.3fr;gap:22px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.panel h2{font-weight:700;font-size:1.05rem;margin:0 0 12px}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.shop li{list-style:none;display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.shop{margin:0;padding:0}
+.shop li.done span{text-decoration:line-through;color:var(--soft)}
+.shop .qty{margin-left:auto;color:var(--soft);white-space:nowrap;font-variant-numeric:tabular-nums}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{background:var(--card);border:0;padding:5px 12px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+dialog{border:0;border-radius:14px;padding:0;width:min(640px,94vw);max-height:90vh;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(42,36,32,.5)}
+.dlg{padding:26px 26px 22px}
+.dlg h2{font-weight:700;letter-spacing:-.03em;font-size:1.6rem;margin:2px 0 6px;line-height:1.3}
+.dlg h4{font-weight:700;font-size:1rem;margin:24px 0 8px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.ings{margin:0;padding:0;columns:2;column-gap:28px}
+.ings li{list-style:none;display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dotted var(--line);break-inside:avoid}
+.ings b{font-weight:600;color:var(--accent);white-space:nowrap;font-variant-numeric:tabular-nums}
+.steps{margin:0;padding-left:1.4em}
+.steps li{padding:4px 0}
+.memo{background:var(--warn-bg);border-radius:8px;padding:10px 14px;margin-top:16px;font-size:.94rem}
+.note{color:var(--soft);font-size:.85rem;margin:8px 0 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.actions .sp{flex:1}
+.form{display:grid;gap:12px}
+.form label{display:grid;gap:4px;font-size:.9rem;color:var(--soft)}
+.form .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+footer{border-top:1px solid var(--line);padding:18px 0 40px;color:var(--soft);font-size:.9rem}
+footer .bar{margin:0}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10}
+#toast.show{opacity:1}
+
+.ico{display:none}
+@media (max-width:720px){
+  html{-webkit-tap-highlight-color:transparent}
+  button,input,select{touch-action:manipulation}
+  .wrap{padding:0 16px}
+  header{padding:calc(14px + env(safe-area-inset-top)) 0 0}
+  .brand{gap:8px}
+  .brand h1{font-size:1.55rem}
+  .brand p{font-size:.85rem}
+
+  /* 하단 탭바 */
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:5;margin:0;gap:0;background:var(--card);
+      border-bottom:0;border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+  nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;
+      font-size:.74rem;border-radius:10px;min-height:52px}
+  nav button[aria-selected="true"]{background:none;color:var(--accent)}
+  .ico{display:block;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  main{padding:10px 0 96px}
+  footer{padding:16px 0 calc(96px + env(safe-area-inset-bottom))}
+  footer .bar span{flex-basis:100%!important}
+  #toast{bottom:calc(84px + env(safe-area-inset-bottom));white-space:nowrap}
+
+  /* 검색 고정 + 가로 스크롤 필터 */
+  #v-recipes>.bar{position:sticky;top:0;z-index:3;background:var(--paper);padding:8px 0;margin-bottom:6px;gap:8px}
+  #v-recipes>.bar input[type=search]{flex:1 1 100%}
+  #v-recipes>.bar select{flex:1}
+  input[type=search],input[type=text],input[type=number],select,.btn{min-height:44px}
+  .btn.small{min-height:38px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;margin:0 -16px 12px;padding:0 16px 4px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none;min-height:38px;padding:5px 16px}
+
+  /* 추가 버튼 → 플로팅 */
+  #addBtn{position:fixed;right:16px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:4;
+      border-radius:99px;padding:12px 18px;box-shadow:0 6px 16px rgba(42,36,32,.28)}
+
+  /* 한 줄 리스트형 카드 */
+  .grid{grid-template-columns:1fr;gap:6px}
+  .card{display:flex;align-items:center;flex-wrap:wrap;gap:2px 8px;padding:8px 40px 8px 12px;min-height:44px;border-radius:10px}
+  .card .cat{display:inline;flex:none;font-size:.72rem;color:var(--soft);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+  .card .meta{display:inline;flex:none;font-size:.8rem}
+  .ml{display:none}
+  .match{flex:1 1 100%;margin-top:2px}
+  .card:hover{transform:none;box-shadow:none}
+  .card:active{background:var(--press)}
+  .card h3{flex:1 1 0;min-width:0;font-size:1rem;margin:0;padding-right:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .star{top:50%;right:0;transform:translateY(-50%);font-size:1.15rem;padding:11px}
+
+  .two{grid-template-columns:1fr;gap:14px}
+  #pantryGrid .star{top:0;transform:none}
+  .panel{padding:16px}
+  .row{padding:12px 0;flex-wrap:wrap}
+  .seg button{padding:8px 14px;min-height:38px}
+  .shop li{padding:12px 0;align-items:center}
+  .shop input[type=checkbox]{width:22px;height:22px;accent-color:var(--green)}
+  label.check input{width:20px;height:20px}
+  .tag{padding:7px 6px 7px 14px}
+  .tag button{padding:2px 8px;font-size:1.15rem}
+
+  /* 바텀시트 */
+  dialog{width:100%;max-width:100%;margin:auto 0 0;border-radius:20px 20px 0 0;max-height:92vh;max-height:92dvh}
+  .dlg{padding:10px 18px 0}
+  .dlg::before{content:"";display:block;width:40px;height:4px;border-radius:99px;background:var(--line);margin:0 auto 14px}
+  .dlg h2{font-size:1.45rem}
+  .ings{columns:1}
+  .ings li{padding:9px 0}
+  .steps li{padding:7px 0}
+  .actions{position:sticky;bottom:0;background:var(--card);margin:18px -18px 0;
+      padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+  .actions .sp{display:none}
+  .actions .btn.primary{flex:1 1 100%}
+  .actions .btn:not(.primary){flex:1}
+  .form .cols{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><h1>한두 그릇</h1><p>남기지 않는 1–2인분 레시피북</p><span style="margin-left:auto;display:flex;gap:6px"><button class="btn small" id="themeBtn">테마</button><button class="btn small" id="exportTop">백업</button></span></div>
+    <nav role="tablist">
+      <button role="tab" data-tab="recipes" aria-selected="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5v13c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5zM12 6v13.5"/></svg><span>레시피</span></button>
+      <button role="tab" data-tab="pantry" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM6 10h12M9.5 6v1.5M9.5 13v3"/></svg><span>재료로 찾기</span></button>
+      <button role="tab" data-tab="shop" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.5l2 11h10l2-8H7M9.5 19.5h.01M16.5 19.5h.01"/></svg><span>장보기<span class="count" id="cartCount" hidden>0</span></span></button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="v-recipes">
+      <div class="bar">
+        <input type="search" id="q" placeholder="요리명·재료 검색" aria-label="검색">
+        <select id="fTime" aria-label="조리시간">
+          <option value="0">시간</option><option value="15">15분 이하</option><option value="30">30분 이하</option>
+        </select>
+        <select id="fLevel" aria-label="난이도">
+          <option value="">난이도</option><option>쉬움</option><option>보통</option><option>어려움</option>
+        </select>
+        <select id="fSort" aria-label="정렬">
+          <option value="">기본순</option><option value="rate">별점 높은순</option><option value="time">시간 짧은순</option>
+        </select>
+        <button class="btn primary" id="addBtn">+ 레시피 추가</button>
+      </div>
+      <div class="chips" id="cats"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section id="v-pantry" hidden>
+      <div class="two">
+        <div class="panel">
+          <h2>지금 있는 재료</h2>
+          <form class="bar" id="pantryForm">
+            <input type="text" id="pantryIn" placeholder="예: 계란, 두부, 양파" style="flex:1" aria-label="재료 입력">
+            <button class="btn">추가</button>
+          </form>
+          <div id="pantryTags"></div>
+          <label class="check"><input type="checkbox" id="staples"> 기본 양념(소금·간장·식용유 등)은 있는 것으로 계산</label>
+        </div>
+        <div>
+          <div class="grid" id="pantryGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-shop" hidden>
+      <div class="two">
+        <div class="panel">
+          <h2>담은 레시피</h2>
+          <div id="cartList"></div>
+        </div>
+        <div class="panel">
+          <h2 style="display:flex;justify-content:space-between;align-items:center;gap:10px">살 것
+            <span><button class="btn small ghost" id="copyBtn">목록 복사</button>
+            <button class="btn small ghost" id="clearBtn">비우기</button></span></h2>
+          <ul class="shop" id="shopList"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="bar">
+      <span style="flex:1">레시피는 이 브라우저에 저장됩니다. 기기를 바꾸기 전에는 백업해 두십시오.</span>
+      <button class="btn small ghost" id="exportBtn">백업 내보내기</button>
+      <button class="btn small ghost" id="importBtn">백업 가져오기</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+  </footer>
+</div>
+
+<dialog id="detail"><div class="dlg" id="detailBody"></div></dialog>
+<dialog id="editor"><form class="dlg form" id="editForm" method="dialog"></form></dialog>
+<dialog id="catDlg"><form class="dlg form" id="catForm" method="dialog"></form></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+var LS='handu-recipes-v1';
+var CATS=['한식','양식','일식','중식','분식·간식','샐러드'];
+var STAPLES=['물','면수','소금','후추','설탕','간장','식용유','참기름','고춧가루','다진 마늘'];
+
+function parseIng(line){
+  var t=line.trim().split(/\s+/); if(!t[0]) return null;
+  for(var i=1;i<t.length;i++){
+    var m=t[i].match(/^(\d+(?:\.\d+)?)(?:\/(\d+(?:\.\d+)?))?(.*)$/);
+    if(m){
+      var q=m[2]&&+m[2]?m[1]/m[2]:+m[1];
+      var u=[m[3]].concat(t.slice(i+1)).filter(Boolean).join(' ');
+      return {n:t.slice(0,i).join(' '),q:q,u:u};
+    }
+  }
+  if(t.length>1) return {n:t.slice(0,-1).join(' '),q:null,u:t[t.length-1]};
+  return {n:t[0],q:null,u:''};
+}
+function R(id,name,cat,time,level,ings,steps,memo){
+  return {id:id,name:name,cat:cat,time:time,level:level,base:1,fav:false,
+    ings:ings.map(parseIng),steps:steps,memo:memo||''};
+}
+var SEED=[
+R('s1','김치볶음밥','한식',15,'쉬움',
+ ['밥 1 공기','김치 100 g','대파 1/4 대','계란 1 개','식용유 1 큰술','간장 1/2 큰술','설탕 1/2 작은술','참기름 1 작은술'],
+ ['김치는 잘게 썰고 대파는 송송 썬다.','팬에 식용유를 두르고 대파를 볶아 파기름을 낸다.','김치와 설탕을 넣고 중불에서 2~3분 볶는다.','밥을 넣고 간장을 팬 가장자리에 둘러 고루 볶는다.','불을 끄고 참기름을 두른 뒤 계란 프라이를 올린다.'],
+ '신김치일수록 맛이 깊어집니다. 찬밥을 쓰면 덜 질어집니다.'),
+R('s2','된장찌개','한식',20,'쉬움',
+ ['물 300 ml','된장 1 큰술','두부 100 g','애호박 1/4 개','양파 1/4 개','감자 1/2 개','대파 1/4 대','다진 마늘 1/2 작은술','고춧가루 1/2 작은술'],
+ ['감자·애호박·양파·두부를 한입 크기로 썬다.','냄비에 물을 붓고 된장을 풀어 끓인다.','끓어오르면 감자와 양파를 넣고 5분 끓인다.','애호박·두부·다진 마늘을 넣고 5분 더 끓인다.','대파와 고춧가루를 넣고 한소끔 끓여 마무리한다.'],
+ '물 대신 쌀뜨물이나 멸치육수를 쓰면 더 구수합니다.'),
+R('s3','제육볶음','한식',20,'보통',
+ ['돼지고기 앞다리살 150 g','양파 1/4 개','대파 1/4 대','고추장 1 큰술','고춧가루 1/2 큰술','간장 1/2 큰술','설탕 1/2 큰술','다진 마늘 1/2 큰술','식용유 1/2 큰술','참기름 1 작은술'],
+ ['고추장·고춧가루·간장·설탕·다진 마늘을 섞어 양념을 만든다.','고기에 양념을 버무려 10분 둔다.','양파는 채 썰고 대파는 어슷 썬다.','달군 팬에 식용유를 두르고 고기를 센불에서 볶는다.','고기가 거의 익으면 양파·대파를 넣고 2분 더 볶은 뒤 참기름을 두른다.'],
+ '남은 고기는 1인분씩 양념째 냉동해 두면 편합니다.'),
+R('s4','계란말이','한식',10,'보통',
+ ['계란 2 개','대파 1/4 대','당근 20 g','소금 약간','식용유 1/2 큰술'],
+ ['대파와 당근을 잘게 다진다.','계란을 풀고 채소와 소금을 넣어 섞는다.','약불로 달군 팬에 식용유를 얇게 펴 바른다.','계란물을 1/3씩 부어 가며 반쯤 익으면 말아 준다.','한 김 식힌 뒤 썬다.'],''),
+R('s5','소고기 미역국','한식',30,'쉬움',
+ ['건미역 5 g','소고기 국거리 60 g','물 400 ml','참기름 1/2 큰술','국간장 1/2 큰술','다진 마늘 1/2 작은술','소금 약간'],
+ ['건미역을 찬물에 10분 불린 뒤 헹궈 먹기 좋게 자른다.','냄비에 참기름을 두르고 소고기를 볶는다.','고기 겉면이 익으면 미역을 넣고 1~2분 더 볶는다.','물을 붓고 끓어오르면 약불로 줄여 15분 끓인다.','국간장과 다진 마늘을 넣고, 부족한 간은 소금으로 맞춘다.'],''),
+R('s6','순두부찌개','한식',15,'보통',
+ ['순두부 1/2 봉','돼지고기 다짐육 50 g','양파 1/4 개','대파 1/4 대','계란 1 개','물 200 ml','고춧가루 1 큰술','간장 1/2 큰술','다진 마늘 1/2 큰술','식용유 1 큰술','소금 약간'],
+ ['뚝배기에 식용유를 두르고 약불에서 대파와 다진 마늘을 볶는다.','다짐육을 넣어 볶다가 고춧가루를 넣고 타지 않게 30초 볶는다.','물·간장·양파를 넣고 끓인다.','순두부를 큼직하게 떠 넣고 3분 끓인다.','소금으로 간을 맞추고 계란을 올려 불을 끈다.'],
+ '고춧가루는 반드시 약불에서 볶아야 쓴맛이 나지 않습니다.'),
+R('s7','참치마요 덮밥','한식',5,'쉬움',
+ ['밥 1 공기','참치 통조림 70 g','계란 1 개','마요네즈 1 큰술','간장 1/2 큰술','참기름 1 작은술','김가루 약간'],
+ ['참치는 기름을 빼 둔다.','계란은 스크램블로 부드럽게 익힌다.','밥 위에 계란·참치를 올리고 간장과 참기름을 두른다.','마요네즈와 김가루를 올려 비벼 먹는다.'],''),
+R('s8','알리오 올리오','양식',15,'쉬움',
+ ['스파게티 100 g','마늘 4 쪽','올리브유 2 큰술','페페론치노 2 개','면수 50 ml','소금 약간','후추 약간'],
+ ['소금을 넣은 끓는 물에 면을 포장지 표기보다 1분 덜 삶는다.','마늘은 얇게 편 썬다.','팬에 올리브유와 마늘을 넣고 약불에서 노릇하게 익힌다.','페페론치노와 면수를 넣고 팬을 흔들어 섞는다.','면을 넣어 1분 볶고 소금·후추로 간한다.'],
+ '면수를 넣고 세게 섞어야 기름과 물이 어우러져 소스가 됩니다.'),
+R('s9','우유 크림 파스타','양식',20,'보통',
+ ['스파게티 100 g','베이컨 2 줄','양파 1/4 개','양송이버섯 3 개','우유 200 ml','슬라이스 치즈 1 장','버터 10 g','다진 마늘 1/2 큰술','소금 약간','후추 약간'],
+ ['면을 삶는 동안 베이컨·양파·버섯을 썬다.','팬에 버터를 녹이고 다진 마늘과 양파를 볶는다.','베이컨과 버섯을 넣어 볶는다.','우유를 붓고 끓어오르면 치즈를 넣어 녹인다.','면을 넣고 소스가 걸쭉해질 때까지 졸인 뒤 소금·후추로 간한다.'],
+ '생크림 없이 우유와 치즈만으로 만들어 재료가 남지 않습니다.'),
+R('s10','오야코동','일식',20,'보통',
+ ['닭다리살 120 g','양파 1/4 개','계란 2 개','밥 1 공기','물 80 ml','간장 1.5 큰술','맛술 1 큰술','설탕 1/2 큰술','대파 약간'],
+ ['닭고기는 한입 크기로, 양파는 채 썬다.','작은 팬에 물·간장·맛술·설탕을 넣고 끓인다.','양파와 닭고기를 넣고 중불에서 6~7분 익힌다.','계란을 가볍게 풀어 두 번에 나눠 붓고 뚜껑을 덮어 30초 익힌다.','밥 위에 미끄러뜨리듯 올리고 대파를 뿌린다.'],
+ '계란은 완전히 풀지 말고 흰자가 보일 정도로만 섞어야 식감이 좋습니다.'),
+R('s11','토마토 계란볶음','중식',10,'쉬움',
+ ['토마토 1 개','계란 2 개','대파 1/4 대','식용유 1 큰술','굴소스 1/2 작은술','설탕 1/2 작은술','소금 약간'],
+ ['토마토는 한입 크기로 썰고 계란은 소금을 넣어 푼다.','팬에 식용유를 두르고 계란을 큼직한 스크램블로 익혀 덜어 둔다.','같은 팬에 대파를 볶다가 토마토를 넣고 2분 볶는다.','굴소스와 설탕을 넣고 계란을 다시 넣어 가볍게 섞는다.'],
+ '밥 위에 올리면 덮밥으로도 좋습니다.'),
+R('s12','떡볶이','분식·간식',20,'쉬움',
+ ['떡볶이 떡 150 g','어묵 1 장','대파 1/4 대','물 250 ml','고추장 1 큰술','고춧가루 1/2 큰술','간장 1/2 큰술','설탕 1 큰술'],
+ ['떡은 물에 헹구고 어묵은 먹기 좋게 썬다.','냄비에 물·고추장·고춧가루·간장·설탕을 넣고 끓인다.','떡을 넣고 중불에서 5분 끓인다.','어묵과 대파를 넣고 국물이 걸쭉해질 때까지 졸인다.'],''),
+R('s13','프렌치토스트','분식·간식',10,'쉬움',
+ ['식빵 2 장','계란 1 개','우유 50 ml','설탕 1/2 큰술','버터 10 g'],
+ ['계란·우유·설탕을 섞어 계란물을 만든다.','식빵을 계란물에 앞뒤로 충분히 적신다.','약불로 달군 팬에 버터를 녹이고 앞뒤로 노릇하게 굽는다.'],''),
+R('s14','닭가슴살 샐러드','샐러드',10,'쉬움',
+ ['익힌 닭가슴살 100 g','샐러드 채소 60 g','방울토마토 5 개','올리브유 1 큰술','레몬즙 1/2 큰술','꿀 1 작은술','소금 약간','후추 약간'],
+ ['채소는 씻어 물기를 빼고 방울토마토는 반으로 자른다.','닭가슴살은 결대로 찢거나 썬다.','올리브유·레몬즙·꿀·소금·후추를 섞어 드레싱을 만든다.','그릇에 담고 먹기 직전에 드레싱을 뿌린다.'],'')
+];
+
+var S={recipes:SEED,cart:[],pantry:[],staples:true,checked:{},cats:CATS.slice()};
+try{var raw=localStorage.getItem(LS); if(raw){var d=JSON.parse(raw); if(d&&Array.isArray(d.recipes)) S=Object.assign(S,d);}}catch(e){}
+if(!Array.isArray(S.cats)||!S.cats.length) S.cats=CATS.slice();
+function save(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}}
+
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function toast(msg){var t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove('show');},1800);}
+function byId(id){for(var i=0;i<S.recipes.length;i++) if(S.recipes[i].id===id) return S.recipes[i]; return null;}
+function norm(s){return String(s).replace(/\s+/g,'').toLowerCase();}
+
+function fmtQ(v,u){
+  if(/^(g|ml|kg|l)$/i.test(u)) return String(v>=10?Math.round(v):Math.round(v*10)/10);
+  var w=Math.floor(v+1e-9), f=v-w, fr=[[.25,'¼'],[.33,'⅓'],[.5,'½'],[.67,'⅔'],[.75,'¾']];
+  if(f<.03) return String(w);
+  for(var i=0;i<fr.length;i++) if(Math.abs(f-fr[i][0])<.03) return (w?w+' ':'')+fr[i][1];
+  return String(Math.round(v*10)/10);
+}
+function amt(i,mult){return i.q==null?(i.u||''):fmtQ(i.q*mult,i.u)+(i.u||'');}
+function ingLine(i){return i.n+(i.q==null?(i.u?' '+i.u:''):' '+(Math.round(i.q*100)/100)+(i.u?' '+i.u:''));}
+
+/* ---------- 레시피 목록 ---------- */
+var F={q:'',cat:'전체',time:0,level:'',fav:false,sort:''};
+function rating(r){var a=r.reviews||[];if(!a.length)return 0;return a.reduce(function(s,x){return s+x.s;},0)/a.length;}
+function stars(n){return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n);}
+function cardHTML(r,extra){
+  return '<div style="position:relative"><button class="card" data-open="'+esc(r.id)+'">'+
+    '<span class="cat">'+esc(r.cat)+'</span><h3>'+esc(r.name)+'</h3>'+
+    '<span class="meta">'+r.time+'분<span class="ml"> · '+esc(r.level)+' · 재료 '+r.ings.length+'가지</span>'+
+    (rating(r)?'<span class="rt">★ '+(Math.round(rating(r)*10)/10)+'</span>':'')+'</span>'+(extra||'')+'</button>'+
+    '<button class="star'+(r.fav?' on':'')+'" data-fav="'+esc(r.id)+'" aria-label="즐겨찾기" aria-pressed="'+!!r.fav+'">★</button></div>';
+}
+function renderCats(){
+  var h=['전체'].concat(S.cats).map(function(c){
+    return '<button class="chip" data-cat="'+esc(c)+'" aria-pressed="'+(F.cat===c&&!F.fav)+'">'+esc(c)+'</button>';}).join('');
+  h+='<button class="chip" data-favf="1" aria-pressed="'+F.fav+'">★ 즐겨찾기</button>';
+  h+='<button class="chip edit" data-catedit="1">✎ 분류 편집</button>';
+  $('cats').innerHTML=h;
+}
+function renderGrid(){
+  var q=norm(F.q);
+  var list=S.recipes.filter(function(r){
+    if(F.fav&&!r.fav) return false;
+    if(!F.fav&&F.cat!=='전체'&&r.cat!==F.cat) return false;
+    if(F.time&&r.time>F.time) return false;
+    if(F.level&&r.level!==F.level) return false;
+    if(q&&norm(r.name).indexOf(q)<0&&!r.ings.some(function(i){return norm(i.n).indexOf(q)>=0;})) return false;
+    return true;
+  });
+  if(F.sort==='rate') list.sort(function(a,b){return rating(b)-rating(a);});
+  else if(F.sort==='time') list.sort(function(a,b){return a.time-b.time;});
+  $('grid').innerHTML=list.length?list.map(function(r){return cardHTML(r);}).join(''):
+    '<div class="empty" style="grid-column:1/-1">조건에 맞는 레시피가 없습니다. 검색어나 필터를 바꿔 보십시오.</div>';
+}
+
+/* ---------- 상세 ---------- */
+var cur=null, sv=1, rvStar=0;
+function renderDetail(){
+  var r=byId(cur); if(!r){$('detail').close();return;}
+  var mult=sv/(r.base||1);
+  $('detailBody').innerHTML=
+    '<div class="cat" style="color:var(--accent);font-size:.85rem;font-weight:600">'+esc(r.cat)+'</div>'+
+    '<h2>'+esc(r.name)+'</h2><div style="color:var(--soft)">'+r.time+'분 · '+esc(r.level)+'</div>'+
+    '<h4>재료 <span class="seg"><button data-sv="1" aria-pressed="'+(sv===1)+'">1인분</button><button data-sv="2" aria-pressed="'+(sv===2)+'">2인분</button></span></h4>'+
+    '<ul class="ings">'+r.ings.map(function(i){return '<li><span>'+esc(i.n)+'</span><b>'+esc(amt(i,mult))+'</b></li>';}).join('')+'</ul>'+
+    (sv!==(r.base||1)?'<p class="note">양념과 물은 단순 배수보다 조금 적게 넣고 간을 보며 맞추는 편이 안전합니다.</p>':'')+
+    '<h4>만드는 법</h4><ol class="steps">'+r.steps.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ol>'+
+    (r.memo?'<div class="memo">'+esc(r.memo)+'</div>':'')+
+    '<h4>내 후기 <span style="font-family:var(--sans);font-size:.9rem;color:var(--soft)">'+
+      ((r.reviews||[]).length?'<span class="rt">★ '+(Math.round(rating(r)*10)/10)+'</span> · '+r.reviews.length+'회':'아직 없음')+'</span></h4>'+
+    '<div class="rv-new"><span class="rs" role="group" aria-label="별점">'+[1,2,3,4,5].map(function(n){
+      return '<button data-rs="'+n+'" class="'+(n<=rvStar?'on':'')+'" aria-label="'+n+'점">★</button>';}).join('')+'</span>'+
+    '<input type="text" id="rvText" maxlength="200" placeholder="예: 간장 조금 줄이면 딱 좋음" aria-label="한 줄 후기">'+
+    '<button class="btn small" data-act="rv">남기기</button></div>'+
+    '<ul class="rvs">'+(r.reviews||[]).map(function(v,i){
+      return '<li><span class="st">'+stars(v.s)+'</span><span class="tx">'+esc(v.t)+'</span><span class="dt">'+esc(v.d)+'</span>'+
+        '<button data-rvdel="'+i+'" aria-label="후기 삭제">×</button></li>';}).join('')+'</ul>'+
+    '<div class="actions"><button class="btn primary" data-act="cart">장보기에 담기 ('+sv+'인분)</button>'+
+    '<span class="sp"></span><button class="btn" data-act="edit">수정</button>'+
+    '<button class="btn ghost" data-act="del">삭제</button><button class="btn ghost" data-act="close">닫기</button></div>';
+}
+function openDetail(id){cur=id;sv=1;rvStar=0;renderDetail();$('detail').showModal();}
+function addReview(){
+  var r=byId(cur); if(!r) return;
+  if(!rvStar){toast('별점을 먼저 선택해 주십시오.');return;}
+  var n=new Date(), p=function(x){return (x<10?'0':'')+x;};
+  r.reviews=r.reviews||[];
+  r.reviews.unshift({s:rvStar,t:$('rvText').value.trim(),d:n.getFullYear()+'.'+p(n.getMonth()+1)+'.'+p(n.getDate())});
+  rvStar=0;save();renderDetail();renderGrid();toast('후기를 남겼습니다.');
+}
+
+/* ---------- 편집 ---------- */
+function openEditor(r){
+  var isNew=!r; r=r||{id:'',name:'',cat:S.cats[0],time:15,level:'쉬움',base:1,ings:[],steps:[],memo:''};
+  $('editForm').innerHTML=
+    '<h2>'+(isNew?'레시피 추가':'레시피 수정')+'</h2>'+
+    '<input type="hidden" name="id" value="'+esc(r.id)+'">'+
+    '<label>요리명<input type="text" name="name" required value="'+esc(r.name)+'"></label>'+
+    '<div class="cols">'+
+      '<label>분류<select name="cat">'+S.cats.map(function(c){return '<option'+(c===r.cat?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select></label>'+
+      '<label>조리시간(분)<input type="number" name="time" min="1" max="600" required value="'+r.time+'"></label>'+
+      '<label>난이도<select name="level">'+['쉬움','보통','어려움'].map(function(c){return '<option'+(c===r.level?' selected':'')+'>'+c+'</option>';}).join('')+'</select></label>'+
+      '<label>기준 분량<select name="base"><option value="1"'+(r.base!==2?' selected':'')+'>1인분</option><option value="2"'+(r.base===2?' selected':'')+'>2인분</option></select></label>'+
+    '</div>'+
+    '<label>재료 — 한 줄에 하나씩 「재료명 양 단위」 (예: 양파 1/2 개, 소금 약간)'+
+      '<textarea name="ings" rows="7" required>'+esc(r.ings.map(ingLine).join('\n'))+'</textarea></label>'+
+    '<label>만드는 법 — 한 줄에 한 단계<textarea name="steps" rows="6" required>'+esc(r.steps.join('\n'))+'</textarea></label>'+
+    '<label>메모 (선택)<textarea name="memo" rows="2">'+esc(r.memo)+'</textarea></label>'+
+    '<div class="actions"><span class="sp"></span><button type="button" class="btn ghost" data-act="cancel">취소</button>'+
+    '<button type="submit" class="btn primary">저장</button></div>';
+  $('editor').showModal();
+}
+$('editForm').addEventListener('click',function(e){if(e.target.dataset.act==='cancel') $('editor').close();});
+$('editForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=e.target.elements;
+  var ings=f.ings.value.split('\n').map(parseIng).filter(Boolean);
+  var steps=f.steps.value.split('\n').map(function(s){return s.trim().replace(/^\d+[.)]\s*/,'');}).filter(Boolean);
+  if(!ings.length||!steps.length){toast('재료와 만드는 법을 입력해 주십시오.');return;}
+  var old=byId(f.id.value);
+  var r={id:old?old.id:'r'+Date.now(),name:f.name.value.trim(),cat:f.cat.value,time:Math.max(1,parseInt(f.time.value,10)||1),
+    level:f.level.value,base:+f.base.value,ings:ings,steps:steps,memo:f.memo.value.trim(),fav:old?old.fav:false,reviews:old&&old.reviews||[]};
+  if(old) S.recipes[S.recipes.indexOf(old)]=r; else S.recipes.unshift(r);
+  save();$('editor').close();renderAll();
+  if($('detail').open) renderDetail();
+  toast('저장했습니다.');
+});
+
+/* ---------- 분류 편집 ---------- */
+function catRow(c){
+  return '<div class="catrow"><input type="text" maxlength="12" value="'+esc(c)+'" data-old="'+esc(c)+'" placeholder="새 분류 이름" aria-label="분류 이름">'+
+    '<button type="button" class="btn small ghost" data-act="rm" aria-label="분류 삭제">×</button></div>';
+}
+function openCatEditor(){
+  $('catForm').innerHTML='<h2>분류 편집</h2>'+
+    '<p class="note" style="margin:0">이름을 바꾸면 해당 레시피의 분류도 함께 바뀝니다. 삭제한 분류의 레시피는 「기타」로 옮겨집니다.</p>'+
+    '<div id="catRows">'+S.cats.map(catRow).join('')+'</div>'+
+    '<div><button type="button" class="btn small" data-act="add">+ 분류 추가</button></div>'+
+    '<div class="actions"><span class="sp"></span><button type="button" class="btn ghost" data-act="cancel">취소</button>'+
+    '<button type="submit" class="btn primary">저장</button></div>';
+  $('catDlg').showModal();
+}
+$('catForm').addEventListener('click',function(e){
+  var a=e.target.dataset.act;
+  if(a==='cancel') $('catDlg').close();
+  else if(a==='rm') e.target.closest('.catrow').remove();
+  else if(a==='add'){
+    $('catRows').insertAdjacentHTML('beforeend',catRow(''));
+    var ins=$('catRows').querySelectorAll('input'); ins[ins.length-1].focus();
+  }
+});
+$('catForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var next=[],ren={};
+  $('catRows').querySelectorAll('input').forEach(function(i){
+    var v=i.value.trim(), old=i.dataset.old;
+    if(!v) return;
+    if(old&&old!==v) ren[old]=v;
+    if(next.indexOf(v)<0) next.push(v);
+  });
+  if(!next.length){toast('분류를 하나 이상 남겨 주십시오.');return;}
+  S.recipes.forEach(function(r){
+    if(ren[r.cat]) r.cat=ren[r.cat];
+    else if(next.indexOf(r.cat)<0){r.cat='기타';if(next.indexOf('기타')<0) next.push('기타');}
+  });
+  S.cats=next;F.cat='전체';save();$('catDlg').close();renderAll();
+  if($('detail').open) renderDetail();
+  toast('분류를 저장했습니다.');
+});
+
+/* ---------- 재료로 찾기 ---------- */
+function has(name){
+  var n=norm(name);
+  if(S.staples&&STAPLES.some(function(s){return norm(s)===n;})) return true;
+  return S.pantry.some(function(p){p=norm(p);return p&&(n.indexOf(p)>=0||p.indexOf(n)>=0);});
+}
+function isStaple(name){var n=norm(name);return S.staples&&STAPLES.some(function(s){return norm(s)===n;});}
+function renderPantry(){
+  $('staples').checked=!!S.staples;
+  $('pantryTags').innerHTML=S.pantry.map(function(p,i){
+    return '<span class="tag">'+esc(p)+'<button data-rm="'+i+'" aria-label="'+esc(p)+' 삭제">×</button></span>';}).join('')||
+    '<p class="note" style="margin:0 0 10px">재료를 추가하면 만들 수 있는 레시피를 순서대로 보여 드립니다.</p>';
+  if(!S.pantry.length){$('pantryGrid').innerHTML='<div class="empty" style="grid-column:1/-1">왼쪽에 냉장고 속 재료를 입력해 주십시오.</div>';return;}
+  var rows=S.recipes.map(function(r){
+    var main=r.ings.filter(function(i){return !isStaple(i.n);});
+    var miss=main.filter(function(i){return !has(i.n);});
+    var got=main.length-miss.length;
+    return {r:r,got:got,total:main.length,miss:miss,ratio:main.length?got/main.length:0};
+  }).filter(function(x){return x.got>0;}).sort(function(a,b){return b.ratio-a.ratio||a.miss.length-b.miss.length;});
+  $('pantryGrid').innerHTML=rows.length?rows.map(function(x){
+    var extra='<div class="match"><div class="meter"><i style="width:'+Math.round(x.ratio*100)+'%"></i></div>'+
+      '주재료 '+x.total+'가지 중 '+x.got+'가지 보유'+
+      (x.miss.length?'<br><span class="miss">부족: '+esc(x.miss.map(function(i){return i.n;}).join(', '))+'</span>':'<br><b style="color:var(--green)">바로 만들 수 있습니다</b>')+'</div>';
+    return cardHTML(x.r,extra);}).join(''):
+    '<div class="empty" style="grid-column:1/-1">입력한 재료가 들어가는 레시피가 아직 없습니다.</div>';
+}
+$('pantryForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  $('pantryIn').value.split(/[,，\n]/).map(function(s){return s.trim();}).filter(Boolean).forEach(function(p){
+    if(!S.pantry.some(function(x){return norm(x)===norm(p);})) S.pantry.push(p);});
+  $('pantryIn').value='';save();renderPantry();
+});
+$('pantryTags').addEventListener('click',function(e){
+  if(e.target.dataset.rm!=null){S.pantry.splice(+e.target.dataset.rm,1);save();renderPantry();}
+});
+$('staples').addEventListener('change',function(e){S.staples=e.target.checked;save();renderPantry();});
+
+/* ---------- 장보기 ---------- */
+function shopItems(){
+  var map={},order=[];
+  S.cart.forEach(function(c){
+    var r=byId(c.id); if(!r) return;
+    var mult=c.sv/(r.base||1);
+    r.ings.forEach(function(i){
+      var k=norm(i.n)+'|'+(i.q==null?'':i.u);
+      if(!map[k]){map[k]={k:k,n:i.n,u:i.u,q:i.q==null?null:0};order.push(k);}
+      if(i.q!=null) map[k].q+=i.q*mult;
+    });
+  });
+  return order.map(function(k){return map[k];});
+}
+function renderShop(){
+  S.cart=S.cart.filter(function(c){return byId(c.id);});
+  var n=S.cart.length; $('cartCount').hidden=!n; $('cartCount').textContent=n;
+  $('cartList').innerHTML=n?S.cart.map(function(c,idx){
+    var r=byId(c.id);
+    return '<div class="row"><span>'+esc(r.name)+'</span><span style="display:flex;gap:8px;align-items:center">'+
+      '<span class="seg"><button data-csv="'+idx+':1" aria-pressed="'+(c.sv===1)+'">1인분</button><button data-csv="'+idx+':2" aria-pressed="'+(c.sv===2)+'">2인분</button></span>'+
+      '<button class="btn small ghost" data-crm="'+idx+'" aria-label="'+esc(r.name)+' 빼기">×</button></span></div>';}).join(''):
+    '<p class="note" style="margin:0">레시피 상세 화면에서 「장보기에 담기」를 누르면 재료가 합산됩니다.</p>';
+  var items=shopItems();
+  $('shopList').innerHTML=items.length?items.map(function(i){
+    var done=!!S.checked[i.k];
+    return '<li class="'+(done?'done':'')+'"><input type="checkbox" data-chk="'+esc(i.k)+'"'+(done?' checked':'')+' aria-label="'+esc(i.n)+'">'+
+      '<span>'+esc(i.n)+'</span><span class="qty">'+esc(i.q==null?(i.u||''):fmtQ(i.q,i.u)+(i.u||''))+'</span></li>';}).join(''):
+    '<li style="border:0;color:var(--soft)">담은 레시피가 없습니다.</li>';
+}
+$('cartList').addEventListener('click',function(e){
+  var d=e.target.dataset;
+  if(d.csv){var p=d.csv.split(':');S.cart[+p[0]].sv=+p[1];}
+  else if(d.crm!=null){S.cart.splice(+d.crm,1);}
+  else return;
+  save();renderShop();
+});
+$('shopList').addEventListener('change',function(e){
+  var k=e.target.dataset.chk; if(k==null) return;
+  if(e.target.checked) S.checked[k]=1; else delete S.checked[k];
+  save();renderShop();
+});
+$('clearBtn').addEventListener('click',function(){S.cart=[];S.checked={};save();renderShop();toast('장보기 목록을 비웠습니다.');});
+$('copyBtn').addEventListener('click',function(){
+  var items=shopItems().filter(function(i){return !S.checked[i.k];});
+  if(!items.length){toast('복사할 항목이 없습니다.');return;}
+  var text=items.map(function(i){return '- '+i.n+' '+(i.q==null?(i.u||''):fmtQ(i.q,i.u)+(i.u||''));}).join('\n');
+  try{navigator.clipboard.writeText(text).then(function(){toast('복사했습니다.');},function(){toast('복사하지 못했습니다.');});}
+  catch(err){toast('복사하지 못했습니다.');}
+});
+
+/* ---------- 공통 이벤트 ---------- */
+document.querySelector('nav').addEventListener('click',function(e){
+  var t=e.target.closest('button[data-tab]'); if(!t) return;
+  document.querySelectorAll('nav button').forEach(function(b){b.setAttribute('aria-selected',b===t);});
+  ['recipes','pantry','shop'].forEach(function(v){$('v-'+v).hidden=v!==t.dataset.tab;});
+  renderAll();
+});
+document.querySelector('main').addEventListener('click',function(e){
+  var f=e.target.closest('[data-fav]');
+  if(f){var r=byId(f.dataset.fav);if(r){r.fav=!r.fav;save();renderAll();}return;}
+  var o=e.target.closest('[data-open]'); if(o) openDetail(o.dataset.open);
+});
+$('cats').addEventListener('click',function(e){
+  var d=e.target.dataset;
+  if(d.catedit){openCatEditor();return;}
+  if(d.cat){F.cat=d.cat;F.fav=false;} else if(d.favf){F.fav=!F.fav;} else return;
+  renderCats();renderGrid();
+});
+$('q').addEventListener('input',function(e){F.q=e.target.value;renderGrid();});
+$('fTime').addEventListener('change',function(e){F.time=+e.target.value;renderGrid();});
+$('fLevel').addEventListener('change',function(e){F.level=e.target.value;renderGrid();});
+$('fSort').addEventListener('change',function(e){F.sort=e.target.value;renderGrid();});
+$('detail').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='rvText'){e.preventDefault();addReview();}});
+$('addBtn').addEventListener('click',function(){openEditor(null);});
+$('detail').addEventListener('click',function(e){
+  if(e.target===$('detail')){$('detail').close();return;}
+  var d=e.target.dataset, r=byId(cur);
+  if(d.sv){sv=+d.sv;renderDetail();return;}
+  if(d.rs){rvStar=+d.rs;$('detail').querySelectorAll('[data-rs]').forEach(function(b){b.classList.toggle('on',+b.dataset.rs<=rvStar);});return;}
+  if(d.rvdel!=null&&r){r.reviews.splice(+d.rvdel,1);save();renderDetail();renderGrid();return;}
+  if(d.act==='rv'){addReview();return;}
+  if(!d.act||!r) return;
+  if(d.act==='close') $('detail').close();
+  else if(d.act==='edit') openEditor(r);
+  else if(d.act==='cart'){
+    var c=S.cart.filter(function(x){return x.id===r.id;})[0];
+    if(c) c.sv=sv; else S.cart.push({id:r.id,sv:sv});
+    save();renderShop();toast('장보기에 담았습니다.');
+  }
+  else if(d.act==='del'){
+    if(!e.target.dataset.armed){e.target.dataset.armed='1';e.target.textContent='한 번 더 누르면 삭제';e.target.style.color='var(--warn)';return;}
+    S.recipes=S.recipes.filter(function(x){return x.id!==r.id;});
+    save();$('detail').close();renderAll();toast('삭제했습니다.');
+  }
+});
+
+/* ---------- 백업 ---------- */
+function doExport(){
+  var blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='handu-recipes-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+  toast('백업 파일을 저장했습니다.');
+}
+$('exportBtn').addEventListener('click',doExport);
+$('exportTop').addEventListener('click',doExport);
+$('importBtn').addEventListener('click',function(){$('importFile').click();});
+$('importFile').addEventListener('change',function(e){
+  var file=e.target.files[0]; if(!file) return;
+  var fr=new FileReader();
+  fr.onload=function(){
+    try{
+      var d=JSON.parse(fr.result);
+      if(!d||!Array.isArray(d.recipes)||!d.recipes.every(function(r){return r&&r.id&&r.name&&Array.isArray(r.ings)&&Array.isArray(r.steps);})) throw 0;
+      S={recipes:d.recipes,cart:Array.isArray(d.cart)?d.cart:[],pantry:Array.isArray(d.pantry)?d.pantry:[],
+         staples:d.staples!==false,checked:d.checked&&typeof d.checked==='object'?d.checked:{},
+         cats:Array.isArray(d.cats)&&d.cats.length?d.cats.map(String):CATS.slice(),th:String(d.th||'sage')};
+      save();applyTheme();renderAll();toast('백업을 불러왔습니다.');
+    }catch(err){toast('올바른 백업 파일이 아닙니다.');}
+    e.target.value='';
+  };
+  fr.readAsText(file);
+});
+
+var THEMES=[['sage','세이지','#f3f4ef'],['classic','클래식','#f5efe3'],['mono','모노','#f7f7f7'],['dark','다크','#151617']];
+function themeIdx(){for(var i=0;i<THEMES.length;i++) if(THEMES[i][0]===S.th) return i; return 0;}
+function applyTheme(){
+  var t=THEMES[themeIdx()];
+  document.documentElement.setAttribute('data-theme',t[0]);
+  var m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content',t[2]);
+  $('themeBtn').textContent='테마: '+t[1];
+}
+$('themeBtn').addEventListener('click',function(){
+  S.th=THEMES[(themeIdx()+1)%THEMES.length][0];save();applyTheme();
+});
+applyTheme();
+function renderAll(){renderCats();renderGrid();renderPantry();renderShop();}
+renderAll();
+})();
+</script>
+</body>
+</html>
